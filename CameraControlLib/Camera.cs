@@ -11,27 +11,29 @@ namespace CameraControlLib
     public class Camera : IDisposable
     {
         private DsDevice _device;
-        private IBaseFilter _filter; 
+        private IBaseFilter _filter;
         private Dictionary<string, CameraProperty> _cameraProperties = new Dictionary<string, CameraProperty>();
 
-        public CameraProperty Focus { get; private set; }
-        public CameraProperty Exposure { get; private set; }
-        public CameraProperty Zoom { get; private set; }
-        public CameraProperty Pan { get; private set; }
-        public CameraProperty Tilt { get; private set; }
-        public CameraProperty Roll { get; private set; }
-        public CameraProperty Iris { get; private set; }
+        public CameraProperty Focus { get { return _cameraProperties["Focus"]; } }
+        public CameraProperty Exposure { get { return _cameraProperties["Exposure"]; } }
+        public CameraProperty Zoom { get { return _cameraProperties["Zoom"]; } }
+        public CameraProperty Pan { get { return _cameraProperties["Pan"]; } }
+        public CameraProperty Tilt { get { return _cameraProperties["Tilt"]; } }
+        public CameraProperty Roll { get { return _cameraProperties["Roll"]; } }
+        public CameraProperty Iris { get { return _cameraProperties["Iris"]; } }
 
-        public CameraProperty Brightness { get; private set; }
-        public CameraProperty Contrast { get; private set; }
-        public CameraProperty Hue { get; private set; }
-        public CameraProperty Saturation { get; private set; }
-        public CameraProperty Sharpness { get; private set; }
-        public CameraProperty Gamma { get; private set; }
-        public CameraProperty ColorEnable { get; private set; }
-        public CameraProperty WhiteBalance { get; private set; }
-        public CameraProperty BacklightCompensation { get; private set; }
-        public CameraProperty Gain { get; private set; }
+        public CameraProperty Brightness { get { return _cameraProperties["Brightness"]; } }
+        public CameraProperty Contrast { get { return _cameraProperties["Contrast"]; } }
+        public CameraProperty Hue { get { return _cameraProperties["Hue"]; } }
+        public CameraProperty Saturation { get { return _cameraProperties["Saturation"]; } }
+        public CameraProperty Sharpness { get { return _cameraProperties["Sharpness"]; } }
+        public CameraProperty Gamma { get { return _cameraProperties["Gamma"]; } }
+        public CameraProperty ColorEnable { get { return _cameraProperties["ColorEnable"]; } }
+        public CameraProperty WhiteBalance { get { return _cameraProperties["WhiteBalance"]; } }
+        public CameraProperty BacklightCompensation { get { return _cameraProperties["BacklightCompensation"]; } }
+        public CameraProperty Gain { get { return _cameraProperties["Gain"]; } }
+
+        internal IBaseFilter Filter { get { return _filter; } }
 
         private Camera(DsDevice device)
         {
@@ -44,31 +46,39 @@ namespace CameraControlLib
             RegisterProperties();
         }
 
+        private readonly static List<CameraPropertyDescriptor> s_supportedProperties = new List<CameraPropertyDescriptor>()
+        {
+            CamControlProperty.CreateDescriptor("Focus", "Focus", CameraControlProperty.Focus),
+            CamControlProperty.CreateDescriptor("Exposure", "Exposure time", CameraControlProperty.Exposure),
+            CamControlProperty.CreateDescriptor("Zoom", "Zoom", CameraControlProperty.Zoom),
+            CamControlProperty.CreateDescriptor("Pan", "Pan", CameraControlProperty.Pan),
+            CamControlProperty.CreateDescriptor("Tilt", "Tilt", CameraControlProperty.Tilt),
+            CamControlProperty.CreateDescriptor("Roll", "Roll", CameraControlProperty.Roll),
+            CamControlProperty.CreateDescriptor("Iris", "Iris", CameraControlProperty.Iris),
+
+            VideoProcAmpCameraProperty.CreateDescriptor("Brightness", "Brightness", VideoProcAmpProperty.Brightness),
+            VideoProcAmpCameraProperty.CreateDescriptor("Contrast", "Contrast", VideoProcAmpProperty.Contrast),
+            VideoProcAmpCameraProperty.CreateDescriptor("Hue", "Hue", VideoProcAmpProperty.Hue),
+            VideoProcAmpCameraProperty.CreateDescriptor("Saturation", "Saturation", VideoProcAmpProperty.Saturation),
+            VideoProcAmpCameraProperty.CreateDescriptor("Sharpness", "Sharpness", VideoProcAmpProperty.Sharpness),
+            VideoProcAmpCameraProperty.CreateDescriptor("Gamma", "Gamma", VideoProcAmpProperty.Gamma),
+            VideoProcAmpCameraProperty.CreateDescriptor("ColorEnable", "Color Enable", VideoProcAmpProperty.ColorEnable),
+            VideoProcAmpCameraProperty.CreateDescriptor("WhiteBalance", "White Balance", VideoProcAmpProperty.WhiteBalance),
+            VideoProcAmpCameraProperty.CreateDescriptor("BacklightCompensation", "Backlight Compensation", VideoProcAmpProperty.BacklightCompensation),
+            VideoProcAmpCameraProperty.CreateDescriptor("Gain", "Gain", VideoProcAmpProperty.Gain)
+        };
+
+        public static System.Collections.Generic.IReadOnlyList<CameraPropertyDescriptor> SupportedProperties
+        {
+            get { return s_supportedProperties.AsReadOnly(); }
+        }
+
         private void RegisterProperties()
         {
-            Func<CameraProperty, CameraProperty> registerProp = (prop) => { _cameraProperties[prop.Id] = prop; return prop; };
-
-            IAMCameraControl cameraControl = _filter as IAMCameraControl;
-            Focus = registerProp(new CamControlProperty("focus", "Focus", cameraControl, CameraControlProperty.Focus));
-            Exposure = registerProp(new CamControlProperty("exposure", "Exposure time", cameraControl, CameraControlProperty.Exposure));
-            Zoom = registerProp(new CamControlProperty("zoom", "Zoom", cameraControl, CameraControlProperty.Zoom));
-            Pan = registerProp(new CamControlProperty("pan", "Pan", cameraControl, CameraControlProperty.Pan));
-            Tilt = registerProp(new CamControlProperty("tilt", "Tilt", cameraControl, CameraControlProperty.Tilt));
-            Roll = registerProp(new CamControlProperty("roll", "Roll", cameraControl, CameraControlProperty.Roll));
-            Iris = registerProp(new CamControlProperty("iris", "Iris", cameraControl, CameraControlProperty.Iris));
-
-            IAMVideoProcAmp videoProcAmp = _filter as IAMVideoProcAmp;
-            Brightness = registerProp(new VideoProcAmpCameraProperty("Brightness", "Brightness", videoProcAmp, VideoProcAmpProperty.Brightness));
-            Contrast = registerProp(new VideoProcAmpCameraProperty("Contrast", "Contrast", videoProcAmp, VideoProcAmpProperty.Contrast));
-            Hue = registerProp(new VideoProcAmpCameraProperty("Hue", "Hue", videoProcAmp, VideoProcAmpProperty.Hue));
-            Saturation = registerProp(new VideoProcAmpCameraProperty("Saturation", "Saturation", videoProcAmp, VideoProcAmpProperty.Saturation));
-            Sharpness = registerProp(new VideoProcAmpCameraProperty("Sharpness", "Sharpness", videoProcAmp, VideoProcAmpProperty.Sharpness));
-            Gamma = registerProp(new VideoProcAmpCameraProperty("Gamma", "Gamma", videoProcAmp, VideoProcAmpProperty.Gamma));
-            ColorEnable = registerProp(new VideoProcAmpCameraProperty("ColorEnable", "Color Enable", videoProcAmp, VideoProcAmpProperty.ColorEnable));
-            WhiteBalance = registerProp(new VideoProcAmpCameraProperty("WhiteBalance", "White Balance", videoProcAmp, VideoProcAmpProperty.WhiteBalance));
-            BacklightCompensation = registerProp(new VideoProcAmpCameraProperty("BacklightCompensation", "Backlight Compensation", videoProcAmp, VideoProcAmpProperty.BacklightCompensation));
-            Gain = registerProp(new VideoProcAmpCameraProperty("Gain", "Gain", videoProcAmp, VideoProcAmpProperty.Gain));
-
+            foreach (var descriptor in Camera.SupportedProperties)
+            {
+                _cameraProperties[descriptor.Id] = descriptor.Create(this);
+            }
         }
 
         public List<CameraProperty> GetProperties()
@@ -97,11 +107,34 @@ namespace CameraControlLib
         {
             var devices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
             var device = devices.FirstOrDefault(d => d.Name == deviceName);
+            
 
             if (device == null)
                 throw new ArgumentException(String.Format("Couldn't find device named {0}!", deviceName));
 
             return new Camera(device);
+        }
+
+        public static IEnumerable<CameraDevice> GetAll()
+        {
+            return DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice).Select(d => new CameraDevice(d));
+        }
+
+        public class CameraDevice
+        {
+            private DsDevice _device;
+            public CameraDevice(DsDevice device)
+            {
+                _device = device;
+            }
+
+            public Camera Create()
+            {
+                return new Camera(_device);
+            }
+
+            public String Name { get { return _device.Name; } }
+            public String DevicePath { get { return _device.DevicePath; } }
         }
 
         #region IDisposable Support
@@ -145,11 +178,21 @@ namespace CameraControlLib
         Relative = 16
     }
 
-
-    public abstract class CameraProperty
+    public abstract class CameraPropertyDescriptor
     {
         public string Id { get; protected set; }
         public string Name { get; protected set; }
+        public abstract string Group { get; }
+
+        public abstract CameraProperty Create(Camera camera);
+    }
+
+
+    public abstract class CameraProperty
+    {
+        public CameraPropertyDescriptor Descriptor { get; protected set; }
+        public string Id { get { return Descriptor.Id; } }
+        public string Name { get { return Descriptor.Id;  } }
         public bool Supported { get; protected set; }
         public int Min { get; protected set; }
         public int Max { get; protected set; }
@@ -190,10 +233,9 @@ namespace CameraControlLib
         private readonly IAMCameraControl _cameraControl;
         private readonly CameraControlProperty _cameraProperty;
 
-        public CamControlProperty(string id, string name, IAMCameraControl cameraControl, CameraControlProperty cameraProperty)
+        public CamControlProperty(CameraPropertyDescriptor descriptor, IAMCameraControl cameraControl, CameraControlProperty cameraProperty)
         {
-            Id = id;
-            Name = name;
+            Descriptor = descriptor;
             _cameraControl = cameraControl;
             _cameraProperty = cameraProperty;
             UpdateRange();
@@ -231,6 +273,29 @@ namespace CameraControlLib
             Flags = (CameraPropertyFlags)flags;
             OnRefresh();
         }
+
+        internal static CameraPropertyDescriptor CreateDescriptor(string id, string name, CameraControlProperty cameraProperty)
+        {
+            return new CamControlPropertyDescriptor(id, name, cameraProperty);
+        }
+
+        internal class CamControlPropertyDescriptor : CameraPropertyDescriptor
+        {
+            private CameraControlProperty _cameraProperty;
+            public override string Group { get { return "cameraControl"; } }
+
+            public CamControlPropertyDescriptor(string id, string name, CameraControlProperty cameraProperty)
+            {
+                Id = id;
+                Name = name;
+                _cameraProperty = cameraProperty;
+            }
+
+            public override CameraProperty Create(Camera camera)
+            {
+                return new CamControlProperty(this, camera.Filter as IAMCameraControl, _cameraProperty);
+            }
+        }
     }
     
     internal class VideoProcAmpCameraProperty : CameraProperty
@@ -238,10 +303,9 @@ namespace CameraControlLib
         private readonly IAMVideoProcAmp _videoAmpControl;
         private readonly VideoProcAmpProperty _videoAmpProperty;
 
-        public VideoProcAmpCameraProperty(string id, string name, IAMVideoProcAmp videoAmpControl, VideoProcAmpProperty videoAmpProperty)
+        public VideoProcAmpCameraProperty(CameraPropertyDescriptor descriptor, IAMVideoProcAmp videoAmpControl, VideoProcAmpProperty videoAmpProperty)
         {
-            Id = id;
-            Name = name;
+            Descriptor = descriptor;
             _videoAmpControl = videoAmpControl;
             _videoAmpProperty = videoAmpProperty;
             UpdateRange();
@@ -278,6 +342,29 @@ namespace CameraControlLib
             Value = value;
             Flags = (CameraPropertyFlags)flags;
             OnRefresh();
+        }
+
+        internal static VideoProcAmpPropertyDescriptor CreateDescriptor(string id, string name, VideoProcAmpProperty videoProcProperty)
+        {
+            return new VideoProcAmpPropertyDescriptor(id, name, videoProcProperty);
+        }
+
+        internal class VideoProcAmpPropertyDescriptor : CameraPropertyDescriptor
+        {
+            private VideoProcAmpProperty _videoProcProperty;
+            public override string Group { get { return "videoProcAmp"; } }
+
+            public VideoProcAmpPropertyDescriptor(string id, string name, VideoProcAmpProperty cameraProperty)
+            {
+                Id = id;
+                Name = name;
+                _videoProcProperty = cameraProperty;
+            }
+
+            public override CameraProperty Create(Camera camera)
+            {
+                return new VideoProcAmpCameraProperty(this, camera.Filter as IAMVideoProcAmp, _videoProcProperty);
+            }
         }
     }
 }
