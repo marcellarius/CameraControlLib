@@ -41,7 +41,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.valueTrackbar.Location = new System.Drawing.Point(161, 3);
             this.valueTrackbar.Name = "valueTrackbar";
-            this.valueTrackbar.Size = new System.Drawing.Size(188, 45);
+            this.valueTrackbar.Size = new System.Drawing.Size(105, 45);
             this.valueTrackbar.TabIndex = 0;
             this.valueTrackbar.Scroll += new System.EventHandler(this.valueTrackbar_Scroll);
             // 
@@ -59,9 +59,9 @@
             this.modeSelector.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.modeSelector.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.modeSelector.FormattingEnabled = true;
-            this.modeSelector.Location = new System.Drawing.Point(355, 3);
+            this.modeSelector.Location = new System.Drawing.Point(272, 3);
             this.modeSelector.Name = "modeSelector";
-            this.modeSelector.Size = new System.Drawing.Size(97, 21);
+            this.modeSelector.Size = new System.Drawing.Size(73, 21);
             this.modeSelector.TabIndex = 2;
             this.modeSelector.SelectionChangeCommitted += new System.EventHandler(this.modeSelector_SelectionChangeCommitted);
             // 
@@ -78,12 +78,13 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.Controls.Add(this.propertyName);
             this.Controls.Add(this.modeSelector);
             this.Controls.Add(this.presetEnabledCheckbox);
             this.Controls.Add(this.valueTrackbar);
             this.Name = "CameraControlSlider";
-            this.Size = new System.Drawing.Size(455, 38);
+            this.Size = new System.Drawing.Size(348, 38);
             ((System.ComponentModel.ISupportInitialize)(this.valueTrackbar)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

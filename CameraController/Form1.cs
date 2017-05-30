@@ -15,33 +15,47 @@ namespace CameraController
     {
         private Camera _camera;
 
+        private Camera GetNamedCamera(string cameraName)
+        {
+            var availableCameras = Camera.GetAll();
+            var chosenDevice = availableCameras.FirstOrDefault(c => c.Name == cameraName);
+            if (chosenDevice == null)
+                chosenDevice = availableCameras.FirstOrDefault();
+            return chosenDevice?.Create();
+        }
+
         public Form1()
         {
             InitializeComponent();
-            _camera = Camera.Get("HD Pro Webcam C920");
+
+            _camera = GetNamedCamera("HD Pro Webcam C920");
             _camera.Refresh();
 
+            int topPosition = 0;
             foreach (var prop in _camera.GetSupportedProperties())
             {
-                var controlSlider = new CameraControlSlider(prop);
-                propertiesLayoutPanel.Controls.Add(controlSlider);
-
+                var slider = new CameraControlSlider(prop);
+                slider.Top = topPosition;
+                slider.Width = propertySliderPanel.Width;
+                slider.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
+                topPosition += slider.Height;
+                propertySliderPanel.Controls.Add(slider);
             }
         }
 
         private void cameraUpdateTimer_Tick(object sender, EventArgs e)
         {
-            _camera.Refresh();
+            _camera?.Refresh();
         }
 
-        private void keepWindowOnTop_CheckedChanged(object sender, EventArgs e)
+        private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            TopMost = keepWindowOnTop.Checked;
+            TopMost = alwaysOnTopToolStripMenuItem.Checked;
         }
 
-        private void Form1_Load(object sender, EventArgs e)
+        private void exitToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            Application.Exit();
         }
     }
 }
