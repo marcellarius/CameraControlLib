@@ -38,7 +38,11 @@ namespace CameraController
                 Camera.Dispose();
 
             Camera = camera;
+            UpdateCameraSliders();
+        }
 
+        private void UpdateCameraSliders(bool forceShowAll = false)
+        {
             foreach (Control control in propertySliderPanel.Controls)
                 control.Dispose();
             propertySliderPanel.Controls.Clear();
@@ -49,6 +53,9 @@ namespace CameraController
                 int topPosition = 0;
                 foreach (var prop in Camera.GetSupportedProperties())
                 {
+                    if (!forceShowAll && Settings.HiddenProperties != null && Settings.HiddenProperties.Contains(prop.Id))
+                        continue;
+
                     var slider = new CameraControlSlider(prop);
                     slider.Top = topPosition;
                     slider.Width = propertySliderPanel.Width;
@@ -103,6 +110,8 @@ namespace CameraController
                 {
                     optionsDialog.UpdateSettings();
                     Settings.Save();
+
+                    UpdateCameraSliders();
                 }
             }
         }
