@@ -40,7 +40,7 @@ namespace CameraController
 
         public void Save(StreamWriter writer)
         {
-            var serializedJson = JsonConvert.SerializeObject(this);
+            var serializedJson = JsonConvert.SerializeObject(this, Formatting.Indented);
             writer.Write(serializedJson);
         }
     }
