@@ -94,5 +94,17 @@ namespace CameraController
                 }
             }
         }
+
+        private void optionsToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            using (var optionsDialog = new OptionsDialog(Settings))
+            {
+                if (optionsDialog.ShowDialog() == DialogResult.OK)
+                {
+                    optionsDialog.UpdateSettings();
+                    Settings.Save();
+                }
+            }
+        }
     }
 }

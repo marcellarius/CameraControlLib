@@ -21,6 +21,7 @@ namespace CameraController
 
             string settingsFilename = Path.Combine(Application.UserAppDataPath, "settings.json");
             Settings settings = LoadSettings(settingsFilename);
+            settings.Filename = settingsFilename;
 
             Application.Run(new MainWindow(settings));
         }

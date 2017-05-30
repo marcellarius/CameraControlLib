@@ -28,22 +28,24 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.availableCamerasComboBox = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
-            this.checkedListBox1 = new System.Windows.Forms.CheckedListBox();
+            this.visiblePropertiesListbox = new System.Windows.Forms.CheckedListBox();
             this.label2 = new System.Windows.Forms.Label();
             this.okButton = new System.Windows.Forms.Button();
             this.cancelButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
-            // comboBox1
+            // availableCamerasComboBox
             // 
-            this.comboBox1.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(98, 17);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(194, 21);
-            this.comboBox1.TabIndex = 0;
+            this.availableCamerasComboBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.availableCamerasComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.availableCamerasComboBox.FormattingEnabled = true;
+            this.availableCamerasComboBox.Location = new System.Drawing.Point(98, 17);
+            this.availableCamerasComboBox.Name = "availableCamerasComboBox";
+            this.availableCamerasComboBox.Size = new System.Drawing.Size(285, 21);
+            this.availableCamerasComboBox.TabIndex = 0;
             // 
             // label1
             // 
@@ -54,18 +56,21 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "Default Camera";
             // 
-            // checkedListBox1
+            // visiblePropertiesListbox
             // 
-            this.checkedListBox1.FormattingEnabled = true;
-            this.checkedListBox1.Location = new System.Drawing.Point(12, 72);
-            this.checkedListBox1.Name = "checkedListBox1";
-            this.checkedListBox1.Size = new System.Drawing.Size(207, 184);
-            this.checkedListBox1.TabIndex = 2;
+            this.visiblePropertiesListbox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.visiblePropertiesListbox.CheckOnClick = true;
+            this.visiblePropertiesListbox.FormattingEnabled = true;
+            this.visiblePropertiesListbox.Location = new System.Drawing.Point(12, 74);
+            this.visiblePropertiesListbox.Name = "visiblePropertiesListbox";
+            this.visiblePropertiesListbox.Size = new System.Drawing.Size(371, 184);
+            this.visiblePropertiesListbox.TabIndex = 2;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(12, 56);
+            this.label2.Location = new System.Drawing.Point(15, 58);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(86, 13);
             this.label2.TabIndex = 3;
@@ -73,8 +78,9 @@
             // 
             // okButton
             // 
+            this.okButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.okButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.okButton.Location = new System.Drawing.Point(338, 355);
+            this.okButton.Location = new System.Drawing.Point(227, 293);
             this.okButton.Name = "okButton";
             this.okButton.Size = new System.Drawing.Size(75, 23);
             this.okButton.TabIndex = 4;
@@ -83,8 +89,9 @@
             // 
             // cancelButton
             // 
+            this.cancelButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cancelButton.Location = new System.Drawing.Point(419, 355);
+            this.cancelButton.Location = new System.Drawing.Point(308, 293);
             this.cancelButton.Name = "cancelButton";
             this.cancelButton.Size = new System.Drawing.Size(75, 23);
             this.cancelButton.TabIndex = 5;
@@ -97,13 +104,13 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(506, 390);
+            this.ClientSize = new System.Drawing.Size(395, 328);
             this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.okButton);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.checkedListBox1);
+            this.Controls.Add(this.visiblePropertiesListbox);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.availableCamerasComboBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -116,9 +123,9 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox availableCamerasComboBox;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.CheckedListBox checkedListBox1;
+        private System.Windows.Forms.CheckedListBox visiblePropertiesListbox;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button okButton;
         private System.Windows.Forms.Button cancelButton;

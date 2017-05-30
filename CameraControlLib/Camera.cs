@@ -163,13 +163,20 @@ namespace CameraControlLib
     }
 
 
+    public interface ICameraDescriptor
+    {
+        string Name { get; }
+        string DevicePath { get; }
+    }
+
+
     /// <summary>
     /// Represents an available Camera device, but has no unmanaged resources associated
     /// </summary>
-    public class CameraDescriptor
+    public class CameraDescriptor : ICameraDescriptor
     {
         public string Name { get; private set; }
-        public String DevicePath { get; private set; }
+        public string DevicePath { get; private set; }
 
         private CameraDescriptor() { }
 

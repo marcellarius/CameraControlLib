@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using CameraControlLib;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,6 +11,12 @@ namespace CameraController
 {
     public class Settings
     {
+        /// <summary>
+        /// Gets or sets the filename for the JSON settings file.
+        /// </summary>
+        [JsonIgnore]
+        public string Filename { get; set; }
+
         public CameraReference DefaultCamera = null;
         public bool OverrideCameraRanges = false;
         public List<string> HiddenProperties = new List<string>();
@@ -20,6 +27,17 @@ namespace CameraController
             return JsonConvert.DeserializeObject<Settings>(jsonString);
         }
 
+        public void Save()
+        {
+            if (Filename == null)
+                throw new InvalidOperationException("Settings filename not set");
+
+            using (var writer = new StreamWriter(Filename, false, Encoding.UTF8))
+            {
+                Save(writer);
+            }
+        }
+
         public void Save(StreamWriter writer)
         {
             var serializedJson = JsonConvert.SerializeObject(this);
@@ -27,9 +45,9 @@ namespace CameraController
         }
     }
 
-    public class CameraReference
+    public class CameraReference : ICameraDescriptor
     {
-        public string DevicePath;
-        public string Name;
+        public string DevicePath { get; set; }
+        public string Name { get; set; }
     }
 }

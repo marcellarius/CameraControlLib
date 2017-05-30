@@ -73,7 +73,7 @@ namespace CameraController
         {
             valueTrackbar.Value = Property.Value;
             if (!modeSelector.DroppedDown)
-                modeSelector.SelectedValue = (CameraPropertyFlags)Property.Flags;
+                modeSelector.SelectedValue = Property.Flags;
         }
 
         private void valueTrackbar_Scroll(object sender, EventArgs e)

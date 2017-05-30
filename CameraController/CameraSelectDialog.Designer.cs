@@ -87,7 +87,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "CameraSelectDialog";
-            this.Text = "CameraSelectDialog";
+            this.Text = "Select Camera";
             this.ResumeLayout(false);
             this.PerformLayout();
 
