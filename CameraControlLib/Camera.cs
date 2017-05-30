@@ -8,6 +8,19 @@ using System.Threading.Tasks;
 
 namespace CameraControlLib
 {
+    /// <summary>
+    /// Provides access to the properties of a camera.
+    /// </summary>
+    /// <remarks>
+    /// To create a Camera, use Camera.GetAll() to enumerate the 
+    /// available video capture devices. This method returns a list of 
+    /// camera descriptors and calling the Create() method on the camera
+    /// descriptor will instantiate the Camera device.
+    /// 
+    /// The descriptors don't store any unmanaged resources and so don't need
+    /// resource cleanup, but the Camera object should be disposed when 
+    /// finished with it.
+    /// </remarks>
     public class Camera : IDisposable
     {
         private DsDevice _device;
@@ -34,19 +47,20 @@ namespace CameraControlLib
         public CameraProperty Gain { get { return _cameraProperties["Gain"]; } }
 
         internal IBaseFilter Filter { get { return _filter; } }
+        internal IAMCameraControl CameraControl {  get { return _filter as IAMCameraControl; } }
+        internal IAMVideoProcAmp VideoProcAmp { get { return _filter as IAMVideoProcAmp; } }
 
-        private Camera(DsDevice device)
+        internal Camera(DsDevice device)
         {
             _device = device;
             IFilterGraph2 graphBuilder = new FilterGraph() as IFilterGraph2;
             IMoniker i = _device.Mon as IMoniker;
-
             graphBuilder.AddSourceFilterForMoniker(i, null, _device.Name, out _filter);
 
             RegisterProperties();
         }
 
-        private readonly static List<CameraPropertyDescriptor> s_supportedProperties = new List<CameraPropertyDescriptor>()
+        private readonly static List<CameraPropertyDescriptor> s_knownProperties = new List<CameraPropertyDescriptor>()
         {
             CamControlProperty.CreateDescriptor("Focus", "Focus", CameraControlProperty.Focus),
             CamControlProperty.CreateDescriptor("Exposure", "Exposure time", CameraControlProperty.Exposure),
@@ -68,24 +82,32 @@ namespace CameraControlLib
             VideoProcAmpCameraProperty.CreateDescriptor("Gain", "Gain", VideoProcAmpProperty.Gain)
         };
 
-        public static System.Collections.Generic.IReadOnlyList<CameraPropertyDescriptor> SupportedProperties
+        public static System.Collections.Generic.IReadOnlyList<CameraPropertyDescriptor> KnownProperties
         {
-            get { return s_supportedProperties.AsReadOnly(); }
+            get { return s_knownProperties.AsReadOnly(); }
         }
 
         private void RegisterProperties()
         {
-            foreach (var descriptor in Camera.SupportedProperties)
+            foreach (var descriptor in Camera.KnownProperties)
             {
                 _cameraProperties[descriptor.Id] = descriptor.Create(this);
             }
         }
 
+        /// <summary>
+        /// Gets a list of all the available properties, even if the camera doesn't appear to support them.
+        /// </summary>
+        /// <returns></returns>
         public List<CameraProperty> GetProperties()
         {
             return _cameraProperties.Values.ToList();
         }
 
+        /// <summary>
+        /// Gets a list of the properties supported by this camera.
+        /// </summary>
+        /// <returns></returns>
         public List<CameraProperty> GetSupportedProperties()
         {
             return _cameraProperties.Values.Where(p => p.Supported).ToList();
@@ -103,38 +125,9 @@ namespace CameraControlLib
                 prop.Save();
         }
 
-        public static Camera Get(string deviceName)
+        public static IList<CameraDescriptor> GetAll()
         {
-            var devices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
-            var device = devices.FirstOrDefault(d => d.Name == deviceName);
-            
-
-            if (device == null)
-                throw new ArgumentException(String.Format("Couldn't find device named {0}!", deviceName));
-
-            return new Camera(device);
-        }
-
-        public static IEnumerable<CameraDevice> GetAll()
-        {
-            return DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice).Select(d => new CameraDevice(d));
-        }
-
-        public class CameraDevice
-        {
-            private DsDevice _device;
-            public CameraDevice(DsDevice device)
-            {
-                _device = device;
-            }
-
-            public Camera Create()
-            {
-                return new Camera(_device);
-            }
-
-            public String Name { get { return _device.Name; } }
-            public String DevicePath { get { return _device.DevicePath; } }
+            return CameraDescriptor.GetAll();
         }
 
         #region IDisposable Support
@@ -169,201 +162,61 @@ namespace CameraControlLib
     }
 
 
-    [Flags]
-    public enum CameraPropertyFlags
+    /// <summary>
+    /// Represents an available Camera device, but has no unmanaged resources associated
+    /// </summary>
+    public class CameraDescriptor
     {
-        None = 0,
-        Automatic = 1,
-        Manual = 2,
-        Relative = 16
-    }
+        public string Name { get; private set; }
+        public String DevicePath { get; private set; }
 
-    public abstract class CameraPropertyDescriptor
-    {
-        public string Id { get; protected set; }
-        public string Name { get; protected set; }
-        public abstract string Group { get; }
+        private CameraDescriptor() { }
 
-        public abstract CameraProperty Create(Camera camera);
-    }
-
-
-    public abstract class CameraProperty
-    {
-        public CameraPropertyDescriptor Descriptor { get; protected set; }
-        public string Id { get { return Descriptor.Id; } }
-        public string Name { get { return Descriptor.Id;  } }
-        public bool Supported { get; protected set; }
-        public int Min { get; protected set; }
-        public int Max { get; protected set; }
-        public int Default { get; protected set; }
-        public int MinimumStepSize { get; protected set; }
-        public CameraPropertyFlags Capabilities { get; protected set; }
-        public int Value { get; set; }
-        public CameraPropertyFlags Flags { get; set; }
-
-        /// <summary>
-        /// Updates the value and flags on the device
-        /// </summary>
-        public abstract void Save();
-
-        /// <summary>
-        /// Gets the current value and flags on the device
-        /// </summary>
-        public abstract void Refresh();
-
-        public event EventHandler<EventArgs> Saved;
-
-        protected void OnSave()
+        public Camera Create()
         {
-            Saved?.Invoke(this, new EventArgs());
-        }
-
-        public event EventHandler<EventArgs> Refreshed;
-
-        protected void OnRefresh()
-        {
-            Refreshed?.Invoke(this, new EventArgs());
-        }
-    }
-
-
-    internal class CamControlProperty : CameraProperty
-    {
-        private readonly IAMCameraControl _cameraControl;
-        private readonly CameraControlProperty _cameraProperty;
-
-        public CamControlProperty(CameraPropertyDescriptor descriptor, IAMCameraControl cameraControl, CameraControlProperty cameraProperty)
-        {
-            Descriptor = descriptor;
-            _cameraControl = cameraControl;
-            _cameraProperty = cameraProperty;
-            UpdateRange();
-        }
-
-        void UpdateRange()
-        {
-            int min = 0, max = 0, stepping = 0, defaultValue = 0;
-            CameraControlFlags flags = CameraControlFlags.None;
-
-            if (_cameraControl == null)
-                Supported = false;
-            else
-                Supported = _cameraControl.GetRange(_cameraProperty, out min, out max, out stepping, out defaultValue, out flags) == 0;
-
-            Min = min;
-            Max = max;
-            Default = defaultValue;
-            MinimumStepSize = stepping;
-            Capabilities = (CameraPropertyFlags)flags;
-        }
-
-        public override void Save()
-        {
-            _cameraControl.Set(_cameraProperty, Value, (CameraControlFlags)Flags);
-            OnSave();
-        }
-
-        public override void Refresh()
-        {
-            int value;
-            CameraControlFlags flags;
-            _cameraControl.Get(_cameraProperty, out value, out flags);
-            Value = value;
-            Flags = (CameraPropertyFlags)flags;
-            OnRefresh();
-        }
-
-        internal static CameraPropertyDescriptor CreateDescriptor(string id, string name, CameraControlProperty cameraProperty)
-        {
-            return new CamControlPropertyDescriptor(id, name, cameraProperty);
-        }
-
-        internal class CamControlPropertyDescriptor : CameraPropertyDescriptor
-        {
-            private CameraControlProperty _cameraProperty;
-            public override string Group { get { return "cameraControl"; } }
-
-            public CamControlPropertyDescriptor(string id, string name, CameraControlProperty cameraProperty)
+            DsDevice matchingDevice = null;
+            DsDevice[] cameraDevices = null;
+            try
             {
-                Id = id;
-                Name = name;
-                _cameraProperty = cameraProperty;
+                cameraDevices = DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice);
+                var exactMatch = cameraDevices.FirstOrDefault(d => d.Name == Name && d.DevicePath == DevicePath);
+                var nameMatch = cameraDevices.FirstOrDefault(d => d.Name == Name);
+                matchingDevice = exactMatch ?? nameMatch;
+                if (matchingDevice == null)
+                    throw new InvalidOperationException("Could not find selected camera device");
+                return new Camera(matchingDevice);
             }
-
-            public override CameraProperty Create(Camera camera)
+            finally
             {
-                return new CamControlProperty(this, camera.Filter as IAMCameraControl, _cameraProperty);
+                DisposeDevices(cameraDevices, deviceToKeep: matchingDevice);
             }
         }
-    }
-    
-    internal class VideoProcAmpCameraProperty : CameraProperty
-    {
-        private readonly IAMVideoProcAmp _videoAmpControl;
-        private readonly VideoProcAmpProperty _videoAmpProperty;
 
-        public VideoProcAmpCameraProperty(CameraPropertyDescriptor descriptor, IAMVideoProcAmp videoAmpControl, VideoProcAmpProperty videoAmpProperty)
+        public static List<CameraDescriptor> GetAll()
         {
-            Descriptor = descriptor;
-            _videoAmpControl = videoAmpControl;
-            _videoAmpProperty = videoAmpProperty;
-            UpdateRange();
-        }
-
-        void UpdateRange()
-        {
-            int min = 0, max = 0, stepping = 0, defaultValue = 0;
-            VideoProcAmpFlags flags = VideoProcAmpFlags.None;
-
-            if (_videoAmpControl == null)
-                Supported = false;
-            else
-                Supported = _videoAmpControl.GetRange(_videoAmpProperty, out min, out max, out stepping, out defaultValue, out flags) == 0;
-
-            Min = min;
-            Max = max;
-            Default = defaultValue;
-            MinimumStepSize = stepping;
-            Capabilities = (CameraPropertyFlags)flags;
-        }
-
-        public override void Save()
-        {
-            _videoAmpControl.Set(_videoAmpProperty, Value, (VideoProcAmpFlags)Flags);
-            OnSave();
-        }
-
-        public override void Refresh()
-        {
-            int value;
-            VideoProcAmpFlags flags;
-            _videoAmpControl.Get(_videoAmpProperty, out value, out flags);
-            Value = value;
-            Flags = (CameraPropertyFlags)flags;
-            OnRefresh();
-        }
-
-        internal static VideoProcAmpPropertyDescriptor CreateDescriptor(string id, string name, VideoProcAmpProperty videoProcProperty)
-        {
-            return new VideoProcAmpPropertyDescriptor(id, name, videoProcProperty);
-        }
-
-        internal class VideoProcAmpPropertyDescriptor : CameraPropertyDescriptor
-        {
-            private VideoProcAmpProperty _videoProcProperty;
-            public override string Group { get { return "videoProcAmp"; } }
-
-            public VideoProcAmpPropertyDescriptor(string id, string name, VideoProcAmpProperty cameraProperty)
+            DsDevice[] cameraDevices = null;
+            try
             {
-                Id = id;
-                Name = name;
-                _videoProcProperty = cameraProperty;
+                return DsDevice.GetDevicesOfCat(FilterCategory.VideoInputDevice).Select(d => CameraDescriptor.FromDsDevice(d)).ToList();
             }
-
-            public override CameraProperty Create(Camera camera)
+            finally
             {
-                return new VideoProcAmpCameraProperty(this, camera.Filter as IAMVideoProcAmp, _videoProcProperty);
+                DisposeDevices(cameraDevices);
+            }
+        }
+
+        internal static CameraDescriptor FromDsDevice(DsDevice device)
+        {
+            return new CameraDescriptor() { Name = device.Name, DevicePath = device.DevicePath };
+        }
+
+        private static void DisposeDevices(IEnumerable<DsDevice> devices, DsDevice deviceToKeep = null)
+        {
+            if (devices != null)
+            {
+                foreach (var device in devices)
+                    if (device != null && device != deviceToKeep)
+                        device.Dispose();
             }
         }
     }
