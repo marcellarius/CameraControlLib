@@ -47,8 +47,6 @@ namespace CameraControlLib
         public CameraProperty Gain { get { return _cameraProperties["Gain"]; } }
 
         internal IBaseFilter Filter { get { return _filter; } }
-        internal IAMCameraControl CameraControl {  get { return _filter as IAMCameraControl; } }
-        internal IAMVideoProcAmp VideoProcAmp { get { return _filter as IAMVideoProcAmp; } }
 
         internal Camera(DsDevice device)
         {
@@ -113,6 +111,9 @@ namespace CameraControlLib
             return _cameraProperties.Values.Where(p => p.Supported).ToList();
         }
 
+        /// <summary>
+        /// Fetches updated 
+        /// </summary>
         public void Refresh()
         {
             foreach (var prop in _cameraProperties.Values)
@@ -203,6 +204,23 @@ namespace CameraControlLib
             {
                 DisposeDevices(cameraDevices);
             }
+        }
+
+        /// <summary>
+        /// Attempts to find a camera by its name and device path.
+        /// 
+        /// If both name and devicePath do not match, it will fall back to 
+        /// identifying the camera by name alone.
+        /// </summary>
+        /// <param name="name">The name of the camera</param>
+        /// <param name="devicePath">The device path for the camera</param>
+        /// <returns>A matching camera descriptor, or null if the camera is not found</returns>
+        public static CameraDescriptor Find(string name, string devicePath)
+        {
+            var cameraDescriptors = CameraDescriptor.GetAll();
+            var exactMatch = cameraDescriptors.FirstOrDefault(c => c.Name == name && c.DevicePath == devicePath);
+            var nameMatch = cameraDescriptors.FirstOrDefault(c => c.Name == name);
+            return exactMatch ?? nameMatch;
         }
 
         internal static CameraDescriptor FromDsDevice(DsDevice device)
