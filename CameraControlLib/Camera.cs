@@ -27,24 +27,24 @@ namespace CameraControlLib
         private IBaseFilter _filter;
         private Dictionary<string, CameraProperty> _cameraProperties = new Dictionary<string, CameraProperty>();
 
-        public CameraProperty Focus { get { return _cameraProperties["Focus"]; } }
-        public CameraProperty Exposure { get { return _cameraProperties["Exposure"]; } }
-        public CameraProperty Zoom { get { return _cameraProperties["Zoom"]; } }
-        public CameraProperty Pan { get { return _cameraProperties["Pan"]; } }
-        public CameraProperty Tilt { get { return _cameraProperties["Tilt"]; } }
-        public CameraProperty Roll { get { return _cameraProperties["Roll"]; } }
-        public CameraProperty Iris { get { return _cameraProperties["Iris"]; } }
+        public CameraProperty Focus { get { return Get("Focus"); } }
+        public CameraProperty Exposure { get { return Get("Exposure"); } }
+        public CameraProperty Zoom { get { return Get("Zoom"); } }
+        public CameraProperty Pan { get { return Get("Pan"); } }
+        public CameraProperty Tilt { get { return Get("Tilt"); } }
+        public CameraProperty Roll { get { return Get("Roll"); } }
+        public CameraProperty Iris { get { return Get("Iris"); } }
 
-        public CameraProperty Brightness { get { return _cameraProperties["Brightness"]; } }
-        public CameraProperty Contrast { get { return _cameraProperties["Contrast"]; } }
-        public CameraProperty Hue { get { return _cameraProperties["Hue"]; } }
-        public CameraProperty Saturation { get { return _cameraProperties["Saturation"]; } }
-        public CameraProperty Sharpness { get { return _cameraProperties["Sharpness"]; } }
-        public CameraProperty Gamma { get { return _cameraProperties["Gamma"]; } }
-        public CameraProperty ColorEnable { get { return _cameraProperties["ColorEnable"]; } }
-        public CameraProperty WhiteBalance { get { return _cameraProperties["WhiteBalance"]; } }
-        public CameraProperty BacklightCompensation { get { return _cameraProperties["BacklightCompensation"]; } }
-        public CameraProperty Gain { get { return _cameraProperties["Gain"]; } }
+        public CameraProperty Brightness { get { return Get("Brightness"); } }
+        public CameraProperty Contrast { get { return Get("Contrast"); } }
+        public CameraProperty Hue { get { return Get("Hue"); } }
+        public CameraProperty Saturation { get { return Get("Saturation"); } }
+        public CameraProperty Sharpness { get { return Get("Sharpness"); } }
+        public CameraProperty Gamma { get { return Get("Gamma"); } }
+        public CameraProperty ColorEnable { get { return Get("ColorEnable"); } }
+        public CameraProperty WhiteBalance { get { return Get("WhiteBalance"); } }
+        public CameraProperty BacklightCompensation { get { return Get("BacklightCompensation"); } }
+        public CameraProperty Gain { get { return Get("Gain"); } }
 
         internal IBaseFilter Filter { get { return _filter; } }
 
@@ -79,6 +79,11 @@ namespace CameraControlLib
             VideoProcAmpCameraProperty.CreateDescriptor("BacklightCompensation", "Backlight Compensation", VideoProcAmpProperty.BacklightCompensation),
             VideoProcAmpCameraProperty.CreateDescriptor("Gain", "Gain", VideoProcAmpProperty.Gain)
         };
+
+        public CameraProperty Get(string propertyId)
+        {
+            return _cameraProperties[propertyId];
+        }
 
         public static System.Collections.Generic.IReadOnlyList<CameraPropertyDescriptor> KnownProperties
         {
@@ -124,6 +129,12 @@ namespace CameraControlLib
         {
             foreach (var prop in _cameraProperties.Values)
                 prop.Save();
+        }
+
+        public void ResetToDefault()
+        {
+            foreach (var prop in _cameraProperties.Values)
+                prop.ResetToDefault();
         }
 
         public static IList<CameraDescriptor> GetAll()

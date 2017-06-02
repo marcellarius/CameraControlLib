@@ -63,6 +63,16 @@ namespace CameraControlLib
         {
             Refreshed?.Invoke(this, new EventArgs());
         }
+
+        public void ResetToDefault()
+        {
+            Value = Default;
+            if (Capabilities.HasFlag(CameraPropertyFlags.Automatic))
+                Flags = CameraPropertyFlags.Automatic;
+            else
+                Flags = CameraPropertyFlags.Manual;
+            Flags &= Capabilities;
+        }
     }
 
 
