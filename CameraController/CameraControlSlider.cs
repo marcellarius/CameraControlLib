@@ -15,6 +15,12 @@ namespace CameraController
     {
         public CameraProperty Property { get; private set; }
 
+        public bool PresetEnabled
+        {
+            get { return presetEnabledCheckbox.Checked; }
+            set { presetEnabledCheckbox.Checked = value; }
+        }
+
         public CameraControlSlider()
         {
             InitializeComponent();

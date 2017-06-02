@@ -20,6 +20,7 @@ namespace CameraController
         public CameraReference DefaultCamera = null;
         public bool OverrideCameraRanges = false;
         public List<string> HiddenProperties = new List<string>();
+        public List<PresetGroup> PresetGroups { get; } = new List<PresetGroup>();
 
         public static Settings Load(StreamReader reader)
         {
@@ -34,14 +35,16 @@ namespace CameraController
 
             using (var writer = new StreamWriter(Filename, false, Encoding.UTF8))
             {
-                Save(writer);
+                writer.Write(JsonConvert.SerializeObject(this, Formatting.Indented));
             }
+
+            OnSaved();
         }
 
-        public void Save(StreamWriter writer)
+        public event EventHandler<EventArgs> Saved;
+        protected void OnSaved()
         {
-            var serializedJson = JsonConvert.SerializeObject(this, Formatting.Indented);
-            writer.Write(serializedJson);
+            Saved?.Invoke(this, new EventArgs());
         }
     }
 

@@ -15,6 +15,17 @@ namespace CameraController
     {
         public Settings Settings { get; private set; }
         public Camera Camera { get; private set; }
+        List<CameraControlSlider> _sliderControls = new List<CameraControlSlider>();
+
+        public MainWindow(Settings settings)
+        {
+            InitializeComponent();
+            Settings = settings;
+            presetSelectorControl.Initialize(Settings, CapturePreset);
+
+            var defaultCamera = GetDefaultCamera();
+            SetCamera(defaultCamera?.Create());
+        }
 
         private CameraDescriptor GetDefaultCamera()
         {
@@ -22,14 +33,6 @@ namespace CameraController
             if (Settings.DefaultCamera != null)
                 preferredCamera = CameraDescriptor.Find(Settings.DefaultCamera.Name, Settings.DefaultCamera.DevicePath);
             return preferredCamera ?? CameraDescriptor.GetAll().FirstOrDefault();
-        }
-
-        public MainWindow(Settings settings)
-        {
-            InitializeComponent();
-            Settings = settings;
-            var defaultCamera = GetDefaultCamera();
-            SetCamera(defaultCamera?.Create());
         }
 
         private void SetCamera(Camera camera)
@@ -46,11 +49,13 @@ namespace CameraController
             foreach (Control control in propertySliderPanel.Controls)
                 control.Dispose();
             propertySliderPanel.Controls.Clear();
+            _sliderControls.Clear();
 
             if (Camera != null)
             {
                 Camera.Refresh();
                 int topPosition = 0;
+                int sliderControlWidth = propertySliderPanel.Width - 10;  //Allow 10px margin on the right
                 foreach (var prop in Camera.GetSupportedProperties())
                 {
                     if (!forceShowAll && Settings.HiddenProperties != null && Settings.HiddenProperties.Contains(prop.Id))
@@ -58,10 +63,11 @@ namespace CameraController
 
                     var slider = new CameraControlSlider(prop);
                     slider.Top = topPosition;
-                    slider.Width = propertySliderPanel.Width;
+                    slider.Width = sliderControlWidth;
                     slider.Anchor = AnchorStyles.Left | AnchorStyles.Top | AnchorStyles.Right;
                     topPosition += slider.Height;
                     propertySliderPanel.Controls.Add(slider);
+                    _sliderControls.Add(slider);
                 }
             }
             else
@@ -76,9 +82,31 @@ namespace CameraController
             }
         }
 
+        private IEnumerable<string> GetPresetEnabledProperties()
+        {
+            foreach (var slider in _sliderControls)
+                if (slider.PresetEnabled)
+                    yield return slider.Property.Id;
+        }
+
+        private void CapturePreset(Preset preset)
+        {
+            var enabledProperties = GetPresetEnabledProperties();
+            preset.RecordPreset(Camera, enabledProperties);;
+        }
+
         private void cameraUpdateTimer_Tick(object sender, EventArgs e)
         {
-            Camera?.Refresh();
+            if (Camera != null)
+            {
+                Camera.Refresh();
+
+                if (presetSelectorControl.ActivePreset != null)
+                {
+                    presetSelectorControl.ActivePreset.Apply(Camera);
+                    Camera.Save();
+                }
+            }
         }
 
         private void alwaysOnTopToolStripMenuItem_Click(object sender, EventArgs e)
@@ -114,6 +142,30 @@ namespace CameraController
                     UpdateCameraSliders();
                 }
             }
+        }
+
+        private void resetToDefaultsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            presetSelectorControl.ActivePreset = null;
+            Camera?.ResetToDefault();
+            Camera?.Save();
+        }
+
+        private void presetSelectorControl_SelectedPresetChanged(object sender, PresetSelectorEventArgs e)
+        {
+            if (e.Preset != null)
+            {
+                foreach (var slider in _sliderControls)
+                {
+                    slider.PresetEnabled = e.Preset.Properties.ContainsKey(slider.Property.Id);
+                }
+            }
+        }
+
+        private void presetSelectorControl_ApplyPreset(object sender, PresetSelectorEventArgs e)
+        {
+            e.Preset.Apply(Camera);
+            Camera.Save();
         }
     }
 }

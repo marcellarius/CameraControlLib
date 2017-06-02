@@ -117,11 +117,48 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="NewGroup" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\NewSolutionFolder_6289.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <metadata name="backgroundContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>489, 17</value>
+  </metadata>
+  <metadata name="presetStatusImages.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <data name="presetStatusImages.ImageStream" mimetype="application/x-microsoft.net.object.binary.base64">
+    <value>
+        AAEAAAD/////AQAAAAAAAAAMAgAAAFdTeXN0ZW0uV2luZG93cy5Gb3JtcywgVmVyc2lvbj00LjAuMC4w
+        LCBDdWx0dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWI3N2E1YzU2MTkzNGUwODkFAQAAACZTeXN0
+        ZW0uV2luZG93cy5Gb3Jtcy5JbWFnZUxpc3RTdHJlYW1lcgEAAAAERGF0YQcCAgAAAAkDAAAADwMAAACi
+        BQAAAk1TRnQBSQFMAgEBBAEAAQgBAAEIAQABEAEAARABAAT/ARkBAAj/AUIBTQE2BwABNgMAASgDAAFA
+        AwABIAMAAQEBAAEYBgABGP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8AFQAD/yTxDAAG8VQAKvEGAAP/
+        J/EJAAPxBvYD8VEAA/EBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFm
+        AswD8QYAA/EBxgHWAe8BZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBxgHWAe8BZgLM
+        A/EGAAPxA/YGhgP2A/FOAAPxAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFm
+        AswBZgLMA/EDAAP/A/EBmQLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBmQLMA/EBZgLM
+        A/EDAAPxA/YDhgZCA4YD9gPxSwAD8QFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFm
+        AswBZgLMAWYCzAPxAwAD8QHGAdYB7wFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAZkCzAPq
+        A/EBZgLMA/EDAAP2A4YDQgGvAa4CrwGuAa8DQgOGA/ZLAAPxAWYCzAFmAswBZgLMAWYCzAFmAswBZgLM
+        AWYCzAFmAswBZgLMAWYCzAFmAswBZgLMA/EDAAPxAZkCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFm
+        AswBZgLMAdYC5wbxAWYCzAPxAwAD9gNCAa8BrgGvAfEB7wHwAfEB7wHwAa8BrgGvA0ID9ksAA/EBZgLM
+        AWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswD8QMABvEBZgLMHvEBZgLM
+        A/EDAAP2A0IB8QHvAfAB8QHvAfAB8QHvAfAB8QHvAfADQhv2MwAD8QFmAswBZgLMAWYCzAFmAswBZgLM
+        AWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAPxBgAD8QFmAswe8QFmAswD8QMAA/YDQgHxAe8B8AHx
+        Ae8B8AHxAe8B8AHxAe8B8BtCA/YzAAPxAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLM
+        AWYCzAFmAswBZgLMA/EGAAPxAWYCzB7xAWYCzAPxAwAD9gNCAfEB7wHwAfEB7wHwAfEB7wHwAfEB7wHw
+        G0ID9jMAA/EBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAFmAswD8QYA
+        A/EBZgLMAWYCzAFmAswBZgLMA+oS8QFmAswD8QMAA/YDQgHxAe8B8AHxAe8B8AHxAe8B8AHxAe8B8ANC
+        G/YzAA/xAZkCzAGZAswP8QFmAswD8QYADPEBmQLMAZkCzBLxAWYCzAPxAwAD9hJCA/ZXAAPxAcYB1gHv
+        AWYCzAFmAswBZgLMAWYCzAFmAswBZgLMAWYCzAPxDwAD8QHGAdYB7wFmAswBZgLMAWYCzAFmAswBZgLM
+        AWYCzAFmAswBZgLMA/EDAAP2EkID9lcAA/8b8Q8AIfEDAAP2EkID9qgAGPb/AAkAAUIBTQE+BwABPgMA
+        ASgDAAFAAwABIAMAAQEBAAEBBgABARYAA/+BAAr/AcABAQHnA/8BgAEBAYABAQHDA/8BgAEBAYABAQGB
+        A/8BgAEBAQABAQEAA/8BgAEBAQABAQEAA/8BgAEBAQABAQEAA/8BgAEBAQABAQIAAv8BgAEBAYABAQIA
+        Av8BgAEBAYABAQIAAv8BgAEBAYABAQIAAv8BgAEBAYABAQEAA/8B+AEBAfABAQEAA/8B+AEBAfABAQEA
+        B/8BAAv/Cw==
+</value>
   </data>
-  <data name="Rename" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Rename_6779.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
+  <metadata name="presetContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>171, 17</value>
+  </metadata>
+  <metadata name="groupContextMenu.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>330, 17</value>
+  </metadata>
 </root>

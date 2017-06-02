@@ -74,6 +74,19 @@
     <Compile Include="OptionsDialog.Designer.cs">
       <DependentUpon>OptionsDialog.cs</DependentUpon>
     </Compile>
+    <Compile Include="Preset.cs" />
+    <Compile Include="NameEntryDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="NameEntryDialog.Designer.cs">
+      <DependentUpon>NameEntryDialog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="PresetSelectorControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="PresetSelectorControl.Designer.cs">
+      <DependentUpon>PresetSelectorControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Settings.cs" />
@@ -89,6 +102,12 @@
     <EmbeddedResource Include="OptionsDialog.resx">
       <DependentUpon>OptionsDialog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="NameEntryDialog.resx">
+      <DependentUpon>NameEntryDialog.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="PresetSelectorControl.resx">
+      <DependentUpon>PresetSelectorControl.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -97,6 +116,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -117,6 +137,12 @@
       <Project>{76fa62d4-eb0c-40ef-949e-51a3a556504c}</Project>
       <Name>CameraControlLib</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\NewSolutionFolder_6289.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Rename_6779.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
