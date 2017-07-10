@@ -171,6 +171,7 @@
             this.presetSelectorControl.Size = new System.Drawing.Size(179, 337);
             this.presetSelectorControl.TabIndex = 0;
             this.presetSelectorControl.ApplyPreset += new System.EventHandler<CameraController.PresetSelectorEventArgs>(this.presetSelectorControl_ApplyPreset);
+            this.presetSelectorControl.ActivePresetChanged += new System.EventHandler<CameraController.PresetSelectorEventArgs>(this.presetSelectorControl_ActivePresetChanged);
             this.presetSelectorControl.SelectedPresetChanged += new System.EventHandler<CameraController.PresetSelectorEventArgs>(this.presetSelectorControl_SelectedPresetChanged);
             // 
             // MainWindow

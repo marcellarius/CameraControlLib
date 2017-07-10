@@ -105,7 +105,7 @@
             this.renameToolStripMenuItem,
             this.deleteToolStripMenuItem});
             this.presetContextMenu.Name = "presetContextMenu";
-            this.presetContextMenu.Size = new System.Drawing.Size(188, 120);
+            this.presetContextMenu.Size = new System.Drawing.Size(188, 142);
             this.presetContextMenu.Opening += new System.ComponentModel.CancelEventHandler(this.presetContextMenu_Opening);
             // 
             // applyPresetMenuItem
@@ -133,6 +133,7 @@
             this.savePresetToolStripMenuItem.Name = "savePresetToolStripMenuItem";
             this.savePresetToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.savePresetToolStripMenuItem.Text = "Save Preset";
+            this.savePresetToolStripMenuItem.Click += new System.EventHandler(this.savePresetToolStripMenuItem_Click);
             // 
             // renameToolStripMenuItem
             // 
@@ -147,6 +148,7 @@
             this.deleteToolStripMenuItem.Name = "deleteToolStripMenuItem";
             this.deleteToolStripMenuItem.Size = new System.Drawing.Size(187, 22);
             this.deleteToolStripMenuItem.Text = "Delete";
+            this.deleteToolStripMenuItem.Click += new System.EventHandler(this.deleteToolStripMenuItem_Click);
             // 
             // groupContextMenu
             // 

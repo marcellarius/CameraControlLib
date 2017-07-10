@@ -52,7 +52,13 @@ namespace CameraController
 
         private void Settings_Saved(object sender, EventArgs e)
         {
+            //TODO: saving settings causes preset treeview to redraw.
             RefreshPresetsList();
+        }
+
+        private void SavePresets()
+        {
+            Settings.Save();
         }
 
         private void OnActivePresetChanged()
@@ -131,9 +137,10 @@ namespace CameraController
                 using (var dialog = new NameEntryDialog("Rename group"))
                 {
                     dialog.GroupName = group.Name;
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         group.Name = groupNode.Text = dialog.GroupName;
+                        SavePresets();
                     }
                 }
             }
@@ -144,11 +151,11 @@ namespace CameraController
             using (var dialog = new NameEntryDialog("Add preset group"))
             {
                 dialog.GroupName = "New group";
-                if (dialog.ShowDialog() == DialogResult.OK)
+                if (dialog.ShowDialog(this) == DialogResult.OK)
                 {
                     PresetGroup group = new PresetGroup() { Name = dialog.GroupName };
                     Settings.PresetGroups.Add(group);
-                    RefreshPresetsList();
+                    SavePresets();
                 }
             }
         }
@@ -162,9 +169,10 @@ namespace CameraController
                 using (var dialog = new NameEntryDialog("Rename preset"))
                 {
                     dialog.GroupName = preset.Name;
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         preset.Name = presetNode.Text = dialog.GroupName;
+                        SavePresets();
                     }
                 }
             }
@@ -180,11 +188,11 @@ namespace CameraController
                 _capturePresetFunction(preset);
                 using (var dialog = new NameEntryDialog("Add preset"))
                 {
-                    if (dialog.ShowDialog() == DialogResult.OK)
+                    if (dialog.ShowDialog(this) == DialogResult.OK)
                     {
                         preset.Name = dialog.GroupName;
                         group.Presets.Add(preset);
-                        RefreshPresetsList();
+                        SavePresets();
                     }
                 }
             }
@@ -216,6 +224,31 @@ namespace CameraController
         {
             var preset = GetSelectedNodeTag<Preset>();
             keepPresetAppliedToolStripMenuItem.Checked = ActivePreset == preset;
+        }
+
+        private void savePresetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var preset = GetSelectedNodeTag<Preset>();
+            if (preset != null)
+            {
+                if (MessageBox.Show("Are you sure you want to save over this preset?", "Save preset?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    _capturePresetFunction(preset);
+                    SavePresets();
+                }
+            }
+        }
+
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var preset = GetSelectedNodeTag<Preset>();
+            if (preset != null)
+            {
+                if (MessageBox.Show("Are you sure you want to save over this preset?", "Save preset?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+                {
+                    SavePresets();
+                }
+            }
         }
     }
 

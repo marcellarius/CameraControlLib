@@ -41,6 +41,7 @@ namespace CameraController
                 Camera.Dispose();
 
             Camera = camera;
+            presetSelectorControl.ActivePreset = null;
             UpdateCameraSliders();
         }
 
@@ -92,7 +93,7 @@ namespace CameraController
         private void CapturePreset(Preset preset)
         {
             var enabledProperties = GetPresetEnabledProperties();
-            preset.RecordPreset(Camera, enabledProperties);;
+            preset.RecordPreset(Camera, enabledProperties);
         }
 
         private void cameraUpdateTimer_Tick(object sender, EventArgs e)
@@ -123,7 +124,7 @@ namespace CameraController
         {
             using (var cameraSelectDialog = new CameraSelectDialog())
             {
-                if (cameraSelectDialog.ShowDialog() == DialogResult.OK)
+                if (cameraSelectDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     SetCamera(cameraSelectDialog.SelectedCamera?.Create());
                 }
@@ -134,7 +135,7 @@ namespace CameraController
         {
             using (var optionsDialog = new OptionsDialog(Settings))
             {
-                if (optionsDialog.ShowDialog() == DialogResult.OK)
+                if (optionsDialog.ShowDialog(this) == DialogResult.OK)
                 {
                     optionsDialog.UpdateSettings();
                     Settings.Save();
@@ -166,6 +167,14 @@ namespace CameraController
         {
             e.Preset.Apply(Camera);
             Camera.Save();
+        }
+
+        private void presetSelectorControl_ActivePresetChanged(object sender, PresetSelectorEventArgs e)
+        {
+            foreach (var slider in _sliderControls)
+            {
+                slider.Enabled = e.Preset == null || !e.Preset.Properties.ContainsKey(slider.Property.Id);
+            }
         }
     }
 }
