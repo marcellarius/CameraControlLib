@@ -114,6 +114,10 @@ namespace CameraControlLib
 
         public override void Refresh()
         {
+            if(_cameraControl == null)
+            {
+                return;
+            }
             int value;
             CameraControlFlags flags;
             _cameraControl.Get(_cameraProperty, out value, out flags);
